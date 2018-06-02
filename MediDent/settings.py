@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'scheduler',
-    'dc_lists'
+    # 'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -131,4 +131,13 @@ STATICFILES_DIRS = [
 
 LOGIN_URL = '/admin/login'
 
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+    }
+}
+
+CSRF_COOKIE_NAME = "csrftoken"  # for Axios
+
+CSRF_COOKIE_SECURE = True  # for Axios
 

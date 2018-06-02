@@ -1,16 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}MediDent календар{% endblock %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-
-</head>
-<body>
 {% block content %}
-    <div id="scheduler"></div>
+    <div id="schedule"></div>
 {% endblock %}
-</body>
-</html>
+
+{% block script %}
+    <script src="{% static 'bundles/schedule.js' %}"></script>
+{% endblock %}
+

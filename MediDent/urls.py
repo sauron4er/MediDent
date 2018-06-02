@@ -22,8 +22,6 @@ from django.conf.urls import url, include
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('scheduler.urls', namespace='scheduler')),
-    # url(r'^scheduler', include('scheduler.urls', namespace='scheduler')),
-    url(r'^dc_lists/', include('dc_lists.urls', namespace='dc_lists')),
 ]
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # urlpatterns += staticfiles_urlpatterns()

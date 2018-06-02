@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}MediDent статистика{% endblock %}
+
+{% block content %}
+    <div id="stats"></div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'bundles/stats.js' %}"></script>
+{% endblock %}
