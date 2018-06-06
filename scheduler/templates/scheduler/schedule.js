@@ -9,7 +9,7 @@ class Schedule extends React.Component {
 
     render() {
         return(
-            <p>react schedule!!!!!11111</p>
+            <p>react schedule</p>
         )
     }
 }

@@ -37,6 +37,7 @@
     "axios": "^0.18.0",
     "querystring": "^0.2.0",
     "react": "^16.4.0",
+    "react-data-grid": "^4.0.7",
     "react-dom": "^16.4.0",
     "react-responsive-modal": "^3.0.1",
     "react-table": "^6.8.2",

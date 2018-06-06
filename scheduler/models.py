@@ -13,7 +13,7 @@ class Doctor(models.Model):
 
 class Client(models.Model):
     name = models.CharField(max_length=45)
-    note = models.CharField(max_length=500, null=True, blank=True)
+    note = models.CharField(max_length=500, blank=True)
     phone = models.CharField(max_length=10)
     is_active = models.BooleanField(default=True)
 

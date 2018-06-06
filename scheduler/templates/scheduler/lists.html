@@ -5,10 +5,15 @@
 
 {% block content %}
     <div id="lists"></div>
+
 {% endblock %}
 
 {% block script %}
+    <script>
+        window.clients = {{ clients|safe }};
+    </script>
     <script src="{% static 'bundles/lists.js' %}"></script>
-{% endblock %}
+
+    {% endblock %}
 
 
