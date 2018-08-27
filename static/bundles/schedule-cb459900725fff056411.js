@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./static/index/stats_index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./static/index/schedule_index.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -338,27 +338,27 @@ eval("\n\nif (false) {} else {\n  module.exports = __webpack_require__(/*! ./cjs
 
 /***/ }),
 
-/***/ "./scheduler/templates/scheduler/stats.js":
-/*!************************************************!*\
-  !*** ./scheduler/templates/scheduler/stats.js ***!
-  \************************************************/
+/***/ "./scheduler/templates/scheduler/schedule.js":
+/*!***************************************************!*\
+  !*** ./scheduler/templates/scheduler/schedule.js ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();\n\nvar _react = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _reactDom = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n\nvar _reactDom2 = _interopRequireDefault(_reactDom);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return call && (typeof call === \"object\" || typeof call === \"function\") ? call : self; }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function, not \" + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }\n\nvar NewClient = function (_React$Component) {\n    _inherits(NewClient, _React$Component);\n\n    function NewClient(props) {\n        _classCallCheck(this, NewClient);\n\n        return _possibleConstructorReturn(this, (NewClient.__proto__ || Object.getPrototypeOf(NewClient)).call(this, props));\n    }\n\n    _createClass(NewClient, [{\n        key: 'render',\n        value: function render() {\n            return _react2.default.createElement(\n                'p',\n                null,\n                'react stats :)'\n            );\n        }\n    }]);\n\n    return NewClient;\n}(_react2.default.Component);\n\n_reactDom2.default.render(_react2.default.createElement(NewClient, null), document.getElementById('stats'));\n\n//# sourceURL=webpack:///./scheduler/templates/scheduler/stats.js?");
+eval("\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();\n\nvar _react = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _reactDom = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n\nvar _reactDom2 = _interopRequireDefault(_reactDom);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return call && (typeof call === \"object\" || typeof call === \"function\") ? call : self; }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function, not \" + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }\n\nvar Schedule = function (_React$Component) {\n    _inherits(Schedule, _React$Component);\n\n    function Schedule(props) {\n        _classCallCheck(this, Schedule);\n\n        return _possibleConstructorReturn(this, (Schedule.__proto__ || Object.getPrototypeOf(Schedule)).call(this, props));\n    }\n\n    _createClass(Schedule, [{\n        key: 'render',\n        value: function render() {\n            return _react2.default.createElement(\n                'div',\n                { className: 'container-fluid m-3' },\n                _react2.default.createElement(\n                    'div',\n                    { className: 'row' },\n                    _react2.default.createElement(\n                        'div',\n                        { className: 'col-md-3' },\n                        '\\u041A\\u0430\\u043B\\u0435\\u043D\\u0434\\u0430\\u0440'\n                    )\n                )\n            );\n        }\n    }]);\n\n    return Schedule;\n}(_react2.default.Component);\n\n_reactDom2.default.render(_react2.default.createElement(Schedule, null), document.getElementById('schedule'));\n\n//# sourceURL=webpack:///./scheduler/templates/scheduler/schedule.js?");
 
 /***/ }),
 
-/***/ "./static/index/stats_index.js":
-/*!*************************************!*\
-  !*** ./static/index/stats_index.js ***!
-  \*************************************/
+/***/ "./static/index/schedule_index.js":
+/*!****************************************!*\
+  !*** ./static/index/schedule_index.js ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\n__webpack_require__(/*! ../../scheduler/templates/scheduler/stats.js */ \"./scheduler/templates/scheduler/stats.js\");\n\n//# sourceURL=webpack:///./static/index/stats_index.js?");
+eval("\n\n__webpack_require__(/*! ../../scheduler/templates/scheduler/schedule.js */ \"./scheduler/templates/scheduler/schedule.js\");\n\n//# sourceURL=webpack:///./static/index/schedule_index.js?");
 
 /***/ })
 

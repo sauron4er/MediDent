@@ -9,7 +9,6 @@ def schedule(request):
         return render(request, 'scheduler/schedule.html')
 
 
-
 @login_required
 def stats(request):
     if request.method == 'GET':
@@ -17,15 +16,15 @@ def stats(request):
 
 
 @login_required
-def lists(request):
+def clients(request):
     if request.method == 'GET':
         clients = [{
             'id': client.pk,
             'name': client.name,
             'note': client.note,
             'phone': '0' + client.phone,
-        } for client in Client.objects.all()]
-        return render(request, 'scheduler/lists.html', {
+        } for client in Client.objects.filter(is_active=True)]
+        return render(request, 'scheduler/clients.html', {
             'clients': clients,
         })
 

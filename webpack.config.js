@@ -1,21 +1,29 @@
 let path = require("path");
 let webpack = require('webpack');
+let BundleTracker = require('webpack-bundle-tracker');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+let pathsToClean = [
+  './static/bundles/*.*'
+];
 
 module.exports = {
   context: __dirname,
 
-  // entry: ['./static/js/index.js'], // entry point of our app. index.js should require other js modules and dependencies it needs
   entry: {
       schedule: './static/index/schedule_index.js',
-      lists: './static/index/lists_index.js',
+      clients: './static/index/clients_index.js',
       stats: './static/index/stats_index.js',
   },
   output: {
       path: path.resolve(__dirname, './static/bundles/'),
-      // filename: "[name]-[hash].js",
-      filename: "[name].js",
-      // filename: "main.js",
+      filename: "[name]-[hash].js",
   },
+
+  plugins: [
+    new CleanWebpackPlugin(pathsToClean, {watch: true, beforeEmit: true}),
+    new BundleTracker({filename: './webpack-stats.json'}),
+  ],
+
   module: {
     rules: [
       {
@@ -27,6 +35,10 @@ module.exports = {
             test: /\.css$/,
             include: /node_modules/,
             loaders: ['style-loader', 'css-loader'],
+      },
+      {     test: /\.css$/,
+            exclude: /node_modules/,
+            loader: "style-loader!css-loader"
       },
     ],
   },

@@ -2,20 +2,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-class NewClient extends React.Component {
+class Stats extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
         return(
-            <p>react stats :)</p>
-
+            <div className="container-fluid m-3">
+                <div className="row">
+                    <div className="col-md-3">
+                        Статистика
+                    </div>
+                </div>
+            </div>
         )
     }
 }
 
 ReactDOM.render(
-    <NewClient />,
+    <Stats />,
     document.getElementById('stats')
 );

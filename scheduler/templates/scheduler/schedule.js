@@ -9,7 +9,13 @@ class Schedule extends React.Component {
 
     render() {
         return(
-            <p>react schedule</p>
+            <div className="container-fluid m-3">
+                <div className="row">
+                    <div className="col-md-3">
+                        Календар
+                    </div>
+                </div>
+            </div>
         )
     }
 }

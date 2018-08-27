@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
 
 {% block title %}MediDent календар{% endblock %}
 
 {% block content %}
     <div id="schedule"></div>
-{% endblock %}
 
-{% block script %}
-    <script src="{% static 'bundles/schedule.js' %}"></script>
-{% endblock %}
+    {% render_bundle 'schedule' %}
 
+{% endblock %}
