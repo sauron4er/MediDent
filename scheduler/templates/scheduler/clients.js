@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Modal from 'react-responsive-modal';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
@@ -26,6 +27,7 @@ class Clients extends React.Component {
     }
 
     state = {
+        open: false,
         new_name: '',
         new_phone: '',
         new_note: '',
@@ -46,7 +48,13 @@ class Clients extends React.Component {
         this.setState({[event.target.name]:event.target.value});
     }
 
+    onOpenModal = () => {
+        this.setState({ open: true });
+    };
 
+    onCloseModal = () => {
+        this.setState({ open: false });
+    };
 
     // Додає нового клієнта у базу даних
     newClient(e) {
@@ -80,67 +88,49 @@ class Clients extends React.Component {
                 new_note: '',
             }));
         })
-          .catch(function (error) {
+          .catch((error) => {
             console.log('errorpost: ' + error);
         });
     }
 
     render() {
+        const { open } = this.state;
         return(
             <div className="container-fluid m-3">
                 <div className="row">
                     <div className="col-md-5">
-
-                        <button type="button" className="btn btn-outline-secondary mb-1 w-100" data-toggle="modal" data-target="#modalNewClient" id="button_new_client">Новий клієнт</button>
+                        <button className="btn btn-outline-secondary mb-1 w-100" onClick={this.onOpenModal}>Open modal</button>
+                        {/*<button type="button" className="btn btn-outline-secondary mb-1 w-100" onClick={this.onOpenModal().bind(this)}>Новий клієнт</button>*/}
 
                         <MyTable
                             rows={this.state.clients}
                             columns={this.state.clients_columns}
                             colWidth={this.state.clients_column_width}
                         />
-
-
-
-
                     </div>
                 </div>
 
                 {/*форма нового клієнта*/}
-                <div className="container">
-                          <div className="modal fade" id="modalNewClient">
-                            <div className="modal-dialog modal-sm modal-dialog-centered">
-                              <div className="modal-content">
+                <Modal open={open} onClose={this.onCloseModal} center>
 
-                                <div className="modal-header">
-                                  <h4 className="modal-title">Новий клієнт</h4>
-                                  <button type="button" className="close" data-dismiss="modal" id="modal_clients_close">&times;</button>
-                                </div>
-
-                                <Form onSubmit={this.newClient}>
-                                    <div className="modal-body">
-                                        <label className="full_width">Ім’я:
-                                            <Input className="full_width" value={this.state.new_name} name="new_name" onChange={this.onChange} validations={[required]}/>
-                                        </label><br/>
-                                        <label className="full_width">Номер телефону:
-                                            <Input className="full_width" value={this.state.new_phone} name="new_phone" onChange={this.onChange} />
-                                        </label><br/>
-                                        <label className="full_width">Нотатка:
-                                            <Textarea className="full_width" value={this.state.new_note} name='new_note' onChange={this.onChange} maxLength={4000}/>
-                                        </label> <br />
-                                    </div>
-
-                                    <div className="modal-footer">
-                                      <Button className="float-sm-left btn btn-outline-secondary mb-1">Підтвердити</Button>
-                                    </div>
-                                </Form>
-
-                              </div>
-                            </div>
+                    <Form onSubmit={this.newClient}>
+                        <div className="modal-body">
+                            <label className="full_width">Ім’я:
+                                <Input className="full_width" size="40" value={this.state.new_name} name="new_name" onChange={this.onChange} validations={[required]}/>
+                            </label><br/>
+                            <label className="full_width">Номер телефону:
+                                <Input className="full_width" value={this.state.new_phone} name="new_phone" onChange={this.onChange} />
+                            </label><br/>
+                            <label className="full_width">Нотатка:
+                                <Textarea className="full_width" value={this.state.new_note} name='new_note' onChange={this.onChange} maxLength={4000}/>
+                            </label> <br />
                         </div>
 
-
-                </div>
-
+                        <div className="modal-footer">
+                          <Button className="float-sm-left btn btn-outline-secondary mb-1">Підтвердити</Button>
+                        </div>
+                    </Form>
+                </Modal>
             </div>
         )
     }
