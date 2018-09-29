@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'MediDent.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'medident.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'data.sqlite'),
     }
 }
 

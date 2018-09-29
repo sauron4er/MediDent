@@ -34,13 +34,11 @@ class Clients extends React.Component {
 
         clients: window.clients,
         clients_columns: [
-            { name: 'id', title: '№' },
             { name: 'name', title: 'Ім’я' },
             { name: 'phone', title: 'Телефон' },
           ],
         clients_column_width: [
-            { columnName: 'id', width: 70 },
-            { columnName: 'phone', width: 120 },
+            { columnName: 'phone', width: 100 },
         ]
     };
 
@@ -65,8 +63,8 @@ class Clients extends React.Component {
             url: '',
             data: querystring.stringify({
                 name: this.state.new_name,
-                phone: this.state.new_phone,
                 note: this.state.new_note,
+                phone: this.state.new_phone,
             }),
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -86,6 +84,7 @@ class Clients extends React.Component {
                 new_name:'',
                 new_phone:'',
                 new_note: '',
+                open: false,
             }));
         })
           .catch((error) => {
@@ -98,14 +97,14 @@ class Clients extends React.Component {
         return(
             <div className="container-fluid m-3">
                 <div className="row">
-                    <div className="col-md-5">
-                        <button className="btn btn-outline-secondary mb-1 w-100" onClick={this.onOpenModal}>Open modal</button>
-                        {/*<button type="button" className="btn btn-outline-secondary mb-1 w-100" onClick={this.onOpenModal().bind(this)}>Новий клієнт</button>*/}
+                    <div className="col-md-4">
+                        <button className="btn btn-outline-secondary mb-1 w-100" onClick={this.onOpenModal}>Додати клієнта</button>
 
                         <MyTable
                             rows={this.state.clients}
                             columns={this.state.clients_columns}
                             colWidth={this.state.clients_column_width}
+                            filter
                         />
                     </div>
                 </div>

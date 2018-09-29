@@ -24,8 +24,8 @@ def clients(request):
             'id': client.pk,
             'name': client.name,
             'note': client.note,
-            'phone': '' if client.phone is None else '0' + client.phone,
-        } for client in Client.objects.filter(is_active=True)]
+            'phone': '' if client.phone is None else client.phone,
+        } for client in Client.objects.filter(is_active=True).order_by('name')]
         return render(request, 'scheduler/clients.html', {
             'clients': clients_list,
         })
