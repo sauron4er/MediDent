@@ -1,3 +1,11 @@
-.full_width {
+.css_full_width {
     width: 100%;
+}
+
+.css_20vh {
+    height: 20vh;
+}
+
+.css_40vw {
+    width: 40vw;
 }

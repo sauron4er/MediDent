@@ -24,13 +24,22 @@ class Clients extends React.Component {
 
         this.onChange = this.onChange.bind(this);
         this.newClient = this.newClient.bind(this);
+        this.editClient = this.editClient.bind(this);
+        this.deactivateClient = this.deactivateClient.bind(this);
+        this.onRowClick = this.onRowClick.bind(this);
     }
 
     state = {
         open: false,
+        open_edit: false,
         new_name: '',
         new_phone: '',
         new_note: '',
+
+        client_name: '',
+        client_phone: '',
+        client_note: '',
+        client_id: '',
 
         clients: window.clients,
         clients_columns: [
@@ -40,18 +49,6 @@ class Clients extends React.Component {
         clients_column_width: [
             { columnName: 'phone', width: 100 },
         ]
-    };
-
-    onChange(event) {
-        this.setState({[event.target.name]:event.target.value});
-    }
-
-    onOpenModal = () => {
-        this.setState({ open: true });
-    };
-
-    onCloseModal = () => {
-        this.setState({ open: false });
     };
 
     // Додає нового клієнта у базу даних
@@ -65,12 +62,12 @@ class Clients extends React.Component {
                 name: this.state.new_name,
                 note: this.state.new_note,
                 phone: this.state.new_phone,
+                is_active: true,
             }),
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
             },
-        }).then((response) => { // закриваємо і очищаємо модальне вікно, відправляємо дані нового документа в MyDocs
-            document.getElementById("modal_clients_close").click();
+        }).then((response) => {
 
             // передаємо нового клієнта у список, очищаємо форму
             const new_client = {
@@ -79,21 +76,116 @@ class Clients extends React.Component {
                 note: this.state.new_note,
                 phone: this.state.new_phone,
             };
+
             this.setState(prevState => ({
                 clients: [...prevState.clients, new_client],
+                client_id: response.data,
+                client_name: this.state.new_name,
+                client_note: this.state.new_note,
+                client_phone: this.state.new_phone,
                 new_name:'',
                 new_phone:'',
                 new_note: '',
                 open: false,
             }));
-        })
-          .catch((error) => {
+        }).catch((error) => {
             console.log('errorpost: ' + error);
         });
     }
 
+    // Заносить у базу даних зміну даних про клієнта
+    editClient(e) {
+        e.preventDefault();
+
+        axios({
+            method: 'post',
+            url: '' + this.state.client_id + '/',
+            data: querystring.stringify({
+                id: this.state.client_id,
+                name: this.state.client_name,
+                note: this.state.client_note,
+                phone: this.state.client_phone,
+                is_active: true,
+            }),
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        }).then((response) => {
+            const clients = this.state.clients;
+            clients.map(client => {
+                if (client.id === this.state.client_id) {
+                    client.name = this.state.client_name;
+                    client.phone = this.state.client_phone;
+                    client.note = this.state.client_note;
+                }
+            });
+            this.setState({
+                clients: clients,
+                open_edit: false,
+            })
+        }).catch((error) => {
+            console.log('errorpost: ' + error);
+        });
+    }
+
+    // Деактивує клієнта
+    // TODO об’єднати функції editClient та deactivateClient
+    deactivateClient(e) {
+        e.preventDefault();
+
+        axios({
+            method: 'post',
+            url: '' + this.state.client_id + '/',
+            data: querystring.stringify({
+                id: this.state.client_id,
+                name: this.state.client_name,
+                note: this.state.client_note,
+                phone: this.state.client_phone,
+                is_active: false,
+            }),
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        }).then((response) => {
+            const filtered_clients = this.state.clients.filter(client => client.id !== this.state.client_id);
+            this.setState({
+                clients: filtered_clients,
+                open_edit: false,
+            })
+        }).catch((error) => {
+            console.log('errorpost: ' + error);
+        });
+    }
+
+    // Показує інфу про обраного клієнта
+    onRowClick(row) {
+        this.setState({
+            client_name: row.name,
+            client_phone: row.phone,
+            client_note: row.note,
+            client_id: row.id,
+        })
+    }
+
+    onChange(event) {
+        this.setState({[event.target.name]:event.target.value});
+    }
+
+    onOpenModal = () => {
+        this.setState({ open: true });
+    };
+
+    onOpenModalEdit = () => {
+        this.setState({ open_edit: true });
+    };
+
+    onCloseModal = () => {
+        this.setState({ open: false, open_edit: false });
+    };
+
+
     render() {
-        const { open } = this.state;
+        const { open, open_edit } = this.state;
         return(
             <div className="container-fluid m-3">
                 <div className="row">
@@ -104,29 +196,68 @@ class Clients extends React.Component {
                             rows={this.state.clients}
                             columns={this.state.clients_columns}
                             colWidth={this.state.clients_column_width}
+                            defaultSorting={[{ columnName: 'name', direction: 'asc' }]}
+                            onRowClick={this.onRowClick}
                             filter
                         />
+                    </div>
+                    <div className="col-md-8">
+                        <div className='row'>
+                            <div className="col-md-9">
+                                <h4>{this.state.client_name}</h4>
+                            </div>
+                            <div className="col-md-2">
+                                <If condition={this.state.client_name !== ''}>
+                                    <button className="btn btn-outline-secondary mb-1 w-100" onClick={this.onOpenModalEdit}>Редагувати</button>
+                                </If>
+                            </div>
+                        </div>
+                        <br/>
+                        <h5>{this.state.client_phone}</h5>
+                        <br/>
+                        <h6>{this.state.client_note}</h6>
                     </div>
                 </div>
 
                 {/*форма нового клієнта*/}
                 <Modal open={open} onClose={this.onCloseModal} center>
-
                     <Form onSubmit={this.newClient}>
-                        <div className="modal-body">
-                            <label className="full_width">Ім’я:
-                                <Input className="full_width" size="40" value={this.state.new_name} name="new_name" onChange={this.onChange} validations={[required]}/>
+                        <div className="modal-body css_40vw">
+                            <label className="css_full_width">Ім’я:
+                                <Input className="css_full_width" size="40" value={this.state.new_name} name="new_name" onChange={this.onChange} validations={[required]}/>
                             </label><br/>
-                            <label className="full_width">Номер телефону:
-                                <Input className="full_width" value={this.state.new_phone} name="new_phone" onChange={this.onChange} />
+                            <label className="css_full_width">Номер телефону:
+                                <Input className="css_full_width" value={this.state.new_phone} name="new_phone" onChange={this.onChange} />
                             </label><br/>
-                            <label className="full_width">Нотатка:
-                                <Textarea className="full_width" value={this.state.new_note} name='new_note' onChange={this.onChange} maxLength={4000}/>
+                            <label className="css_full_width">Нотатка:
+                                <Textarea className="css_full_width" value={this.state.new_note} name='new_note' onChange={this.onChange} maxLength={4000}/>
                             </label> <br />
                         </div>
 
                         <div className="modal-footer">
                           <Button className="float-sm-left btn btn-outline-secondary mb-1">Підтвердити</Button>
+                        </div>
+                    </Form>
+                </Modal>
+
+                {/*форма редагування клієнта*/}
+                <Modal open={open_edit} onClose={this.onCloseModal} center>
+                    <Form onSubmit={this.editClient}>
+                        <div className="modal-body css_40vw">
+                            <label className="css_full_width">Ім’я:
+                                <Input className="css_full_width" size="40" value={this.state.client_name} name="client_name" onChange={this.onChange} validations={[required]}/>
+                            </label><br/>
+                            <label className="css_full_width">Номер телефону:
+                                <Input className="css_full_width" value={this.state.client_phone} name="client_phone" onChange={this.onChange} />
+                            </label><br/>
+                            <label className="css_full_width">Нотатка:
+                                <Textarea className="css_full_width css_20vh" value={this.state.client_note} name='client_note' onChange={this.onChange} maxLength={4000}/>
+                            </label> <br />
+                        </div>
+
+                        <div className="modal-footer">
+                            <Button className="float-sm-left btn btn-outline-secondary mb-1">Підтвердити</Button>
+                            <Button className="float-sm-right btn btn-outline-secondary mb-1" onClick={this.deactivateClient}>Видалити клієнта</Button>
                         </div>
                     </Form>
                 </Modal>
