@@ -1,13 +1,11 @@
 'use strict';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import Modal from 'react-responsive-modal';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
 import Textarea from 'react-validation/build/textarea';
-
 import axios from 'axios';
 import querystring from 'querystring'; // for axios
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -16,18 +14,9 @@ axios.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded,
 
 import {required} from './validations';
 import './my_styles.css';
-import MyTable from './my_table';
+import DxTable from './dx_table';
 
 class Clients extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.onChange = this.onChange.bind(this);
-        this.newClient = this.newClient.bind(this);
-        this.editClient = this.editClient.bind(this);
-        this.deactivateClient = this.deactivateClient.bind(this);
-        this.onRowClick = this.onRowClick.bind(this);
-    }
 
     state = {
         open: false,
@@ -52,7 +41,7 @@ class Clients extends React.Component {
     };
 
     // Додає нового клієнта у базу даних
-    newClient(e) {
+    newClient = (e) => {
         e.preventDefault();
 
         axios({
@@ -91,10 +80,10 @@ class Clients extends React.Component {
         }).catch((error) => {
             console.log('errorpost: ' + error);
         });
-    }
+    };
 
     // Заносить у базу даних зміну даних про клієнта
-    editClient(e) {
+    editClient = (e) => {
         e.preventDefault();
 
         axios({
@@ -126,11 +115,11 @@ class Clients extends React.Component {
         }).catch((error) => {
             console.log('errorpost: ' + error);
         });
-    }
+    };
 
     // Деактивує клієнта
     // TODO об’єднати функції editClient та deactivateClient
-    deactivateClient(e) {
+    deactivateClient = (e) => {
         e.preventDefault();
 
         axios({
@@ -151,25 +140,28 @@ class Clients extends React.Component {
             this.setState({
                 clients: filtered_clients,
                 open_edit: false,
+                client_name: '',
+                client_phone: '',
+                client_note: '',
             })
         }).catch((error) => {
             console.log('errorpost: ' + error);
         });
-    }
+    };
 
     // Показує інфу про обраного клієнта
-    onRowClick(row) {
+    onRowClick = (row) => {
         this.setState({
             client_name: row.name,
             client_phone: row.phone,
             client_note: row.note,
             client_id: row.id,
         })
-    }
+    };
 
-    onChange(event) {
+    onChange = (event) => {
         this.setState({[event.target.name]:event.target.value});
-    }
+    };
 
     onOpenModal = () => {
         this.setState({ open: true });
@@ -192,7 +184,7 @@ class Clients extends React.Component {
                     <div className="col-md-4">
                         <button className="btn btn-outline-secondary mb-1 w-100" onClick={this.onOpenModal}>Додати клієнта</button>
 
-                        <MyTable
+                        <DxTable
                             rows={this.state.clients}
                             columns={this.state.clients_columns}
                             colWidth={this.state.clients_column_width}

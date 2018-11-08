@@ -22,9 +22,9 @@ class Client(models.Model):
 
 
 class Visit(models.Model):
-    doctor = models.ForeignKey(Doctor, related_name='visits', on_delete=models.PROTECT)
+    doctor = models.ForeignKey(Doctor, related_name='visits', on_delete=models.PROTECT, null=True, blank=True)
     client = models.ForeignKey(Client, related_name='visits', on_delete=models.PROTECT)
     start = models.DateTimeField()
     finish = models.DateTimeField()
     note = models.CharField(max_length=500, null=True, blank=True)
-    price = models.IntegerField(null=True)
+    price = models.IntegerField(null=True, blank=True)
