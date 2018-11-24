@@ -13,3 +13,21 @@ class AddVisitForm(forms.ModelForm):
     class Meta:
         model = Visit
         fields = ('doctor', 'client', 'start', 'finish', 'note')
+
+
+class ChangeVisitsTimeForm(forms.ModelForm):
+    class Meta:
+        model = Visit
+        fields = ('start', 'finish')
+
+
+class ChangeVisitsDoctorOrNoteForm(forms.ModelForm):
+    class Meta:
+        model = Visit
+        fields = ('doctor', 'note')
+
+
+class DelVisitForm(forms.ModelForm):
+    class Meta:
+        model = Visit
+        fields = ('is_active',)

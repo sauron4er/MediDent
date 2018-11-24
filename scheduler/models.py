@@ -28,3 +28,4 @@ class Visit(models.Model):
     finish = models.DateTimeField()
     note = models.CharField(max_length=500, null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)

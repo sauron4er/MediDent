@@ -7,7 +7,7 @@ from django.utils import timezone
 import pytz
 
 from .models import Client, Doctor, Visit
-from .forms import ClientForm, AddVisitForm
+from .forms import ClientForm, AddVisitForm, ChangeVisitsTimeForm, DelVisitForm, ChangeVisitsDoctorOrNoteForm
 
 
 def convert_to_localtime(utctime):
@@ -38,8 +38,10 @@ def schedule(request):
             'endDate': convert_to_localtime(visit.finish),
             'note': '' if visit.note is None else visit.note,
             'doctor': '' if visit.doctor is None else visit.doctor.name,
-        } for visit in Visit.objects.filter(start__range=[today - timedelta(days=7), today + timedelta(days=7)])]
-        return render(request, 'scheduler/schedule.html', {
+        } for visit in Visit.objects
+            .filter(start__range=[today - timedelta(days=7), today + timedelta(days=7)])
+            .filter(is_active=True)]
+        return render(request, 'scheduler/schedule/schedule.html', {
             'visits': visits, 'clients': clients_list, 'doctors': doctors,
         })
     if request.method == 'POST':
@@ -52,8 +54,8 @@ def schedule(request):
         start_string = datetime.strftime(start, "%Y-%d-%m %H:%M:%S")
         finish_string = datetime.strftime(finish, "%Y-%d-%m %H:%M:%S")
         # Задаємо формат вірних даних і виправляємо їх функцією strptime
-        correct_start = datetime.strptime(start_string, "%Y-%m-%d %H:%M:%S")
-        correct_finish = datetime.strptime(finish_string, "%Y-%m-%d %H:%M:%S")
+        correct_start = datetime.strptime(start_string, "%Y-%d-%m %H:%M:%S")
+        correct_finish = datetime.strptime(finish_string, "%Y-%d-%m %H:%M:%S")
 
         visit_request.update({'start': correct_start})
         visit_request.update({'finish': correct_finish})
@@ -69,9 +71,34 @@ def schedule(request):
 
 
 @login_required
+def change_visit(request, pk):
+    visit = get_object_or_404(Visit, pk=pk)
+    if request.method == 'POST':
+        if request.POST['change'] == 'time':
+            visit_request = request.POST.copy()
+            visit_request.update({'start': datetime.strptime(request.POST['start'], "%Y/%m/%d %H:%M:%S")})
+            visit_request.update({'finish': datetime.strptime(request.POST['finish'], "%Y/%m/%d %H:%M:%S")})
+
+            form = ChangeVisitsTimeForm(visit_request, instance=visit)
+            if form.is_valid():
+                form.save()
+                return HttpResponse(visit)
+        elif request.POST['change'] == 'doctor_note':
+            form = ChangeVisitsDoctorOrNoteForm(request.POST, instance=visit)
+            if form.is_valid():
+                form.save()
+                return HttpResponse(visit)
+        elif request.POST['change'] == 'delete':
+            form = DelVisitForm(request.POST, instance=visit)
+            if form.is_valid():
+                form.save()
+                return HttpResponse(visit)
+
+
+@login_required
 def stats(request):
     if request.method == 'GET':
-        return render(request, 'scheduler/stats.html')
+        return render(request, 'scheduler/stats/stats.html')
 
 
 @login_required
@@ -84,7 +111,7 @@ def clients(request):
             'note': '' if client.note is None else client.note,
             'phone': '' if client.phone is None else client.phone,
         } for client in Client.objects.filter(is_active=True).order_by('name')]
-        return render(request, 'scheduler/clients.html', {
+        return render(request, 'scheduler/clients/clients.html', {
             'clients': clients_list,
         })
 

@@ -1,1 +1,1 @@
-import '../../scheduler/templates/scheduler/clients.js'
+import '../../scheduler/templates/scheduler/clients/clients.js'

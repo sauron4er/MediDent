@@ -1,1 +1,1 @@
-import '../../scheduler/templates/scheduler/stats.js'
+import '../../scheduler/templates/scheduler/stats/stats.js'

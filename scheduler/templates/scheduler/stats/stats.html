@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+
+{% block title %}MediDent статистика{% endblock %}
+
+{% block content %}
+    <div class="container-fluid pl-0" id="stats"></div>
+
+    {% render_bundle 'stats' %}
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+
+{% block title %}MediDent календар{% endblock %}
+
+{% block content %}
+    <div class="container-fluid pl-0" id="schedule"></div>
+
+    {% block script %}
+        <script>
+            window.visits = {{ visits|safe }};
+            window.clients = {{ clients|safe }};
+            window.doctors = {{ doctors|safe }};
+        </script>
+    {% endblock %}
+
+    {% render_bundle 'schedule' %}
+
+{% endblock %}
