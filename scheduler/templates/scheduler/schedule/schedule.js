@@ -19,10 +19,17 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded, x-xsrf-token';
 
+// TODO: Видалення прийому. Внесення оплати
+
 
 class Schedule extends React.Component {
 
     state = {
+        firstSchedulerRef: null, // інстанс першого календаря для синхронізації
+        second_week: new Date().setDate(new Date().getDate() + 7),    // Дати для синхронізації календарів
+        third_week: new Date().setDate(new Date().getDate() + 14),
+        forth_week: new Date().setDate(new Date().getDate() + 21),
+
         visits: window.visits,
         clients_columns: [
             { name: 'name', title: 'Ім’я' },
@@ -32,6 +39,8 @@ class Schedule extends React.Component {
             { columnName: 'phone', width: 150 },
         ],
         opened_visit: '',
+
+        client_visits: [], // список майбутніх візитів клієнта
 
         new_note: '',
         new_client: '',
@@ -47,9 +56,14 @@ class Schedule extends React.Component {
         finish: '',
         note: '',
         client: '',
+        price: '',
 
         open: false,
         open_edit: false,
+    };
+
+    setFirstSchedulerRef = (ref) => {
+        this.setState({firstSchedulerRef: ref.instance})
     };
 
     getIndex = (id, array) => {
@@ -69,19 +83,22 @@ class Schedule extends React.Component {
                 new_doctor: event.target.options[selectedIndex].getAttribute('value'),
             });
         }
-        if (event.target.name === 'doctor') {
+        else if (event.target.name === 'doctor') {
             const selectedIndex = event.target.options.selectedIndex;
             this.setState({
                 doctor_id: event.target.options[selectedIndex].getAttribute('data-key'),
                 doctor: event.target.options[selectedIndex].getAttribute('value'),
             });
         }
+        else if (event.target.name === 'price') {
+            this.setState({[event.target.name]:event.target.value.replace(/\D/,'')});
+        }
         else {
             this.setState({[event.target.name]:event.target.value});
         }
     };
 
-    // Повертає дату та час нового візиту у форму
+    // Надає дату та час нового візиту для показу у формі
     getVisitsTime(time) {
         const visitTime = new Date(time);
         const return_day = visitTime.getFullYear() + '.' + parseInt(visitTime.getMonth()+1) + '.' + visitTime.getDate();
@@ -162,7 +179,7 @@ class Schedule extends React.Component {
         });
     };
 
-    changeVisitsDoctorOrNote = (e) => {
+    changeVisitsInfo = (e) => {
         e.preventDefault();
         if (this.state.note !== this.state.opened_visit.note || this.state.doctor !== this.state.opened_visit.doctor ) {
             axios({
@@ -198,24 +215,39 @@ class Schedule extends React.Component {
 
     // показує форму нового візиту, записує в state обраний час
     onCellClick = (e) => {
-        if (e.cellData) { // клацнули пусту ячейку:
+        console.log('b');
+        this.setState({
+            open: true,
+            new_start: e.cellData.startDate,
+            new_finish: new Date(e.cellData.startDate.getTime() + 50*60000),
+        });
+    };
+
+    // при одинарному кліку на прийом показує інфу про майбутні прийоми клієнтьа
+    onAppClick = (e) => {
+        e.cancel = true;
+        this.setState({
+            client: e.appointmentData.text,
+            client_visits: [],
+        });
+        axios({
+            method: 'get',
+            url: 'client_visits/' + e.appointmentData.id + '/',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        }).then((response) => {
             this.setState({
-                open: true,
-                new_start: e.cellData.startDate,
-                new_finish: e.cellData.endDate,
+                client_visits: response.data
             })
-        }
-        else {
-            this.setState({
-                open: true,
-                new_start: e.appointmentData.startDate,
-                new_finish: e.appointmentData.endDate,
-            })
-        }
+        }).catch((error) => {
+            console.log('errorpost: ' + error);
+        });
     };
 
     // відкриває модульне вікно для редагування прийому
     onAppDblClick = (e) => {
+        console.log('a');
         e.cancel = true;
         this.setState({
             opened_visit: e.appointmentData,
@@ -226,6 +258,45 @@ class Schedule extends React.Component {
             client: e.appointmentData.text,
             open_edit: true
         })
+    };
+
+    // синхронізує календарі по датам при зміні у першому
+    syncSchedulers = (e) => {
+        if (e.name === 'currentDate') {
+            if (e.value !== 'yyyy/MM/dd HH:mm:ss') {
+                // Синхронізуємо дати
+                let first_week = new Date(e.value);
+                let second_week = new Date(e.value);
+                let third_week = new Date(e.value);
+                let forth_week = new Date(e.value);
+
+                second_week.setDate(first_week.getDate() + 7);
+                third_week.setDate(first_week.getDate() + 14);
+                forth_week.setDate(first_week.getDate() + 21);
+
+                this.setState({
+                    second_week: second_week,
+                    third_week: third_week,
+                    forth_week: forth_week,
+                });
+
+                // Отримуємо дані про візити
+                const day = e.value.getFullYear() + '/' + parseInt(e.value.getMonth() + 1) + '/' + e.value.getDate();
+                axios({
+                    method: 'get',
+                    url: 'visits_list/' + day + '/',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                }).then((response) => {
+                    this.setState({
+                        visits: response.data
+                    })
+                }).catch((error) => {
+                    console.log('errorpost: ' + error);
+                });
+            }
+        }
     };
 
     // закриває форму, очищує поля
@@ -243,36 +314,113 @@ class Schedule extends React.Component {
         })
     };
 
+    // TODO Переробити модальне вікно на стандартне бутстреповське, шоб не мигав scheduler
+
     render() {
+        const today = new Date();
+        const {second_week, third_week, forth_week, client} = this.state;
+
         return(
             <div className='row'>
                 <div className='col-md-10'>
-                    <Scheduler
-                        id='scheduler'
-                        dataSource={this.state.visits}
-                        height={'auto'}
-                        views={[
-                            { name: "Тиждень", type: "week", startDate: new Date() },
-                            { name: "2 тижні", type: "week", intervalCount: 2, startDate: new Date() },
-                            { name: "День", type: "day", startDate: new Date() },
-                        ]}
-                        defaultCurrentView={'week'}
-                        defaultCurrentDate={new Date()}
-                        startDayHour={8}
-                        endDayHour={21}
-                        firstDayOfWeek={1}
-                        cellDuration={60}
-                        showAllDayPanel={false}
-                        onCellClick={this.onCellClick}
-                        onAppointmentClick={(e) => {e.cancel = true;}}
-                        onAppointmentUpdated={this.changeVisitsTime}
-                        onAppointmentDeleted={this.delVisit}
-                        onAppointmentDblClick={this.onAppDblClick}
-                        maxAppointmentsPerCell={'unlimited'}
-                        shadeUntilCurrentTime={true}
-                        crossScrollingEnabled={true} // щоб працювало css
-                        allowDragging={true}
-                    />
+                    <div>
+                        <Scheduler
+                            id='first_scheduler'
+                            ref={this.setFirstSchedulerRef}
+                            dataSource={this.state.visits}
+                            height={'auto'}
+                            views={[
+                                { name: " ", type: "week", startDate: today },
+                                // { name: "2 тижні", type: "week", intervalCount: 2, startDate: new Date() },
+                                // { name: "День", type: "day", startDate: new Date() },
+                            ]}
+                            currentView={'week'}
+                            defaultCurrentDate={today}
+                            startDayHour={8}
+                            endDayHour={21}
+                            firstDayOfWeek={1}
+                            cellDuration={60}
+                            showAllDayPanel={false}
+                            onCellClick={this.onCellClick}
+                            onAppointmentUpdated={this.changeVisitsTime}
+                            onAppointmentDeleted={this.delVisit}
+                            // onAppointmentClick={(e) => {e.cancel = true;}}
+                            onAppointmentClick={this.onAppClick}
+                            onAppointmentDblClick={this.onAppDblClick}
+                            maxAppointmentsPerCell={'unlimited'}
+                            shadeUntilCurrentTime={true}
+                            // crossScrollingEnabled={true} // щоб працювало css
+                            allowDragging={true}
+                            onOptionChanged={this.syncSchedulers}
+                        />
+                    </div>
+                    <div>
+                        <Scheduler
+                            id='not_first_scheduler'
+                            dataSource={this.state.visits}
+                            height={'auto'}
+                            currentView={'week'}
+                            currentDate={new Date(second_week)}
+                            startDayHour={8}
+                            endDayHour={21}
+                            firstDayOfWeek={1}
+                            cellDuration={60}
+                            showAllDayPanel={false}
+                            onCellClick={this.onCellClick}
+                            onAppointmentUpdated={this.changeVisitsTime}
+                            onAppointmentDeleted={this.delVisit}
+                            onAppointmentClick={this.onAppClick}
+                            onAppointmentDblClick={this.onAppDblClick}
+                            maxAppointmentsPerCell={'unlimited'}
+                            shadeUntilCurrentTime={true}
+                            allowDragging={true}
+                        />
+                    </div>
+                    <div>
+                        <Scheduler
+                            id='not_first_scheduler'
+                            dataSource={this.state.visits}
+                            height={'auto'}
+                            currentView={'week'}
+                            currentDate={third_week}
+                            startDayHour={8}
+                            endDayHour={21}
+                            firstDayOfWeek={1}
+                            cellDuration={60}
+                            showAllDayPanel={false}
+                            onCellClick={this.onCellClick}
+                            onAppointmentUpdated={this.changeVisitsTime}
+                            onAppointmentDeleted={this.delVisit}
+                            onAppointmentClick={this.onAppClick}
+                            onAppointmentDblClick={this.onAppDblClick}
+                            maxAppointmentsPerCell={'unlimited'}
+                            shadeUntilCurrentTime={true}
+                            allowDragging={true}
+                        />
+                    </div>
+                    <div>
+                        <Scheduler
+                            id='not_first_scheduler'
+                            dataSource={this.state.visits}
+                            height={'auto'}
+                            currentView={'week'}
+                            currentDate={forth_week}
+                            startDayHour={8}
+                            endDayHour={21}
+                            firstDayOfWeek={1}
+                            cellDuration={60}
+                            showAllDayPanel={false}
+                            onCellClick={this.onCellClick}
+                            onAppointmentUpdated={this.changeVisitsTime}
+                            onAppointmentDeleted={this.delVisit}
+                            onAppointmentClick={this.onAppClick}
+                            onAppointmentDblClick={this.onAppDblClick}
+                            maxAppointmentsPerCell={'unlimited'}
+                            shadeUntilCurrentTime={true}
+                            allowDragging={true}
+                        />
+                    </div>
+
 
                     {/* Модальне вікно створення нового прийому */}
                     <Modal visible={this.state.open} effect="fadeInUp" onClickAway={this.closeForm}>
@@ -321,10 +469,9 @@ class Schedule extends React.Component {
                             <button type="button" className="close" aria-label="Close" onClick={this.closeForm}>
                                 <span className='text-primary' aria-hidden="true">&times;</span>
                             </button>
-                            <Form onSubmit={this.changeVisit}>
+                            <Form onSubmit={this.changeVisitsInfo}>
                                 <div className='font-weight-bold'>Клієнт: {this.state.client}</div>
                                 <div className='css_full_width text-right'>Час прийому: {this.getVisitsTime(this.state.start)}</div>
-
 
                                 <label className="css_full_width">Нотатка:
                                     <Textarea className="css_full_width form-control" value={this.state.note} name='note' onChange={this.onChange} maxLength={500}/>
@@ -341,16 +488,28 @@ class Schedule extends React.Component {
                                         }
                                     </Select>
                                 </label>
-                                <hr/>
-                                <Button className="float-sm-left btn btn-outline-primary my-3" onClick={this.changeVisitsDoctorOrNote}>Підтвердити</Button>
-                                <Button className="float-sm-right btn btn-outline-secondary my-3" onClick={this.deactivateClient}>Видалити прийом</Button>
 
+                                <label className="css_full_width">Сплачено:
+                                    <input className="form-control" value={this.state.price} name='price' onChange={this.onChange}/> грн.
+                                </label> <br />
+
+                                <hr/>
+                                <Button className="float-sm-left btn btn-outline-primary my-3" onClick={this.changeVisitsInfo}>Підтвердити</Button>
+                                <Button className="float-sm-right btn btn-outline-secondary my-3" onClick={this.deactivateClient}>Видалити прийом</Button>
                             </Form>
                         </div>
                     </Modal>
                 </div>
                 <div className='col-md-2'>
                     <SideMenu/>
+                    <div className='border border-primary rounded p-1 mt-2 text-center'>
+                        <div className='font-weight-bold'>{client}</div>
+                        <For each='visit' index='id' of={this.state.client_visits}>
+                            <div key={visit.id}>
+                                {visit.start}
+                            </div>
+                        </For>
+                    </div>
                 </div>
             </div>
         )

@@ -1,9 +1,52 @@
-#scheduler .dx-scheduler-cell-sizes-vertical {
-    height: 20px;
+.dx-scheduler-cell-sizes-vertical {
+    height: 25px;
 }
-/*#scheduler .dx-scheduler-cell-sizes-horizontal {*/
+/*.dx-scheduler-cell-sizes-horizontal {*/
     /*width: 200px;*/
 /*}*/
 /*.dx-scheduler-header-panel-cell {*/
     /*height: 10px !important;*/
 /*}*/
+
+
+/*.dx-scheduler-appointment {*/
+    /*box-sizing: content-box;*/
+    /*padding-right: 10px;*/
+/*}*/
+/*.dx-scheduler-timeline .dx-scheduler-appointment,*/
+/*.dx-scheduler-work-space-month .dx-scheduler-appointment,*/
+/*.dx-scheduler-work-space-week .dx-scheduler-appointment,*/
+/*.dx-scheduler-all-day-appointment .dx-scheduler-appointment {*/
+    /*box-sizing: border-box;*/
+    /*padding-right: 10px;*/
+/*}*/
+
+
+/*.dx-scheduler-cell-sizes-horizontal {*/
+    /*width: 100px;*/
+/*}*/
+
+#not_first_scheduler .dx-scheduler-all-day-panel {
+   display: none;
+}
+#not_first_scheduler .dx-scheduler-all-day-panel-space {
+   padding-top: 0;
+   margin-top: 0;
+}
+
+#not_first_scheduler .dx-scheduler-header {
+   display: none;
+}
+#not_first_scheduler .dx-scheduler-work-space {
+   padding-top: 0;
+   margin-top: 0;
+}
+/*#not_first_scheduler .dx-scheduler-work-space {*/
+   /*border: none;*/
+/*}*/
+#not_first_scheduler .dx-scheduler-work-space-day .dx-scrollable {
+   padding-bottom: 0;
+}
+#not_first_scheduler .dx-scheduler-work-space-day .dx-scrollable {
+    padding-bottom: 0;
+}

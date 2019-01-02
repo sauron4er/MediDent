@@ -2,25 +2,38 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from datetime import timedelta, datetime
-from dateutil import parser
 from django.utils import timezone
 import pytz
+import json
 
 from .models import Client, Doctor, Visit
 from .forms import ClientForm, AddVisitForm, ChangeVisitsTimeForm, DelVisitForm, ChangeVisitsDoctorOrNoteForm
 
 
-def convert_to_localtime(utctime):
-    fmt = '%Y/%m/%d %H:%M:%S'
+def convert_to_localtime(utctime, fmt):
     utc = utctime.replace(tzinfo=pytz.UTC)
     localtz = utc.astimezone(timezone.get_current_timezone())
     return localtz.strftime(fmt)
 
 
+# бере з бд список прийомів на місяць, який відображається на екрані
+def get_visits(day):
+    visits = [{
+        'id': visit.id,
+        'text': visit.client.name,
+        'startDate': convert_to_localtime(visit.start, '%Y/%m/%d %H:%M:%S'),
+        'endDate': convert_to_localtime(visit.finish, '%Y/%m/%d %H:%M:%S'),
+        'note': '' if visit.note is None else visit.note,
+        'doctor': '' if visit.doctor is None else visit.doctor.name,
+    } for visit in Visit.objects
+        .filter(start__range=[day - timedelta(days=7), day + timedelta(days=28)])
+        .filter(is_active=True)]
+    return visits
+
+
 @login_required
 def schedule(request):
     if request.method == 'GET':
-        today = timezone.now()
         clients_list = [{
             'id': client.pk,
             'name': client.name,
@@ -31,31 +44,16 @@ def schedule(request):
             'id': doctor.pk,
             'name': doctor.name,
         } for doctor in Doctor.objects.filter(is_active=True).order_by('name')]
-        visits = [{
-            'id': visit.id,
-            'text': visit.client.name,
-            'startDate': convert_to_localtime(visit.start),
-            'endDate': convert_to_localtime(visit.finish),
-            'note': '' if visit.note is None else visit.note,
-            'doctor': '' if visit.doctor is None else visit.doctor.name,
-        } for visit in Visit.objects
-            .filter(start__range=[today - timedelta(days=7), today + timedelta(days=7)])
-            .filter(is_active=True)]
+
         return render(request, 'scheduler/schedule/schedule.html', {
-            'visits': visits, 'clients': clients_list, 'doctors': doctors,
+            'visits': get_visits(timezone.now()), 'clients': clients_list, 'doctors': doctors,
         })
     if request.method == 'POST':
         # копіюємо запит, щоб зробити його мутабельним і обробляємо поля
         visit_request = request.POST.copy()
-        # parser.parse перетворює отримані з dxScheduler дані на нормальний DateTime, але путає місцями місяць та день
-        start = parser.parse(visit_request['start'])
-        finish = parser.parse(visit_request['finish'])
-        # Перетворюємо невірні дані в string
-        start_string = datetime.strftime(start, "%Y-%d-%m %H:%M:%S")
-        finish_string = datetime.strftime(finish, "%Y-%d-%m %H:%M:%S")
-        # Задаємо формат вірних даних і виправляємо їх функцією strptime
-        correct_start = datetime.strptime(start_string, "%Y-%d-%m %H:%M:%S")
-        correct_finish = datetime.strptime(finish_string, "%Y-%d-%m %H:%M:%S")
+
+        correct_start = datetime.strptime(visit_request['start'], "%d.%m.%Y, %H:%M:%S")
+        correct_finish = datetime.strptime(visit_request['finish'], "%d.%m.%Y, %H:%M:%S")
 
         visit_request.update({'start': correct_start})
         visit_request.update({'finish': correct_finish})
@@ -68,6 +66,32 @@ def schedule(request):
             new_visit = add_visit_form.save()
 
             return HttpResponse(new_visit.pk)
+
+
+@login_required
+def visits_list(request, date):
+    if request.method == 'GET':
+        return HttpResponse(
+            json.dumps(
+                get_visits(datetime.strptime(date, "%Y/%m/%d"))
+            )
+        )
+
+
+@login_required
+def client_visits(request, visit_id):
+    if request.method == 'GET':
+        visit = get_object_or_404(Visit, pk=visit_id)
+
+        visits = [{  # Список майбутніх візитів клієнта
+            'id': vis.pk,
+            'start': convert_to_localtime(vis.start, '%d.%m, %H:%M:%S'),
+        } for vis in Visit.objects
+            .filter(client_id=visit.client_id)
+            .filter(start__gte=datetime.now())
+            .order_by('start')]
+
+        return HttpResponse(json.dumps(visits))
 
 
 @login_required
