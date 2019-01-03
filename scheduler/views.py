@@ -88,6 +88,7 @@ def client_visits(request, visit_id):
             'start': convert_to_localtime(vis.start, '%d.%m, %H:%M:%S'),
         } for vis in Visit.objects
             .filter(client_id=visit.client_id)
+            .filter(is_active=True)
             .filter(start__gte=datetime.now())
             .order_by('start')]
 

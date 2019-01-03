@@ -178,7 +178,6 @@ class Clients extends React.Component {
         this.setState({ open: false, open_edit: false });
     };
 
-
     render() {
         return(
             <div className="row">

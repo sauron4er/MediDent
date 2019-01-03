@@ -19,13 +19,12 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded, x-xsrf-token';
 
-// TODO: Видалення прийому. Внесення оплати
+// TODO: Внесення оплати
 
 
 class Schedule extends React.Component {
 
     state = {
-        firstSchedulerRef: null, // інстанс першого календаря для синхронізації
         second_week: new Date().setDate(new Date().getDate() + 7),    // Дати для синхронізації календарів
         third_week: new Date().setDate(new Date().getDate() + 14),
         forth_week: new Date().setDate(new Date().getDate() + 21),
@@ -60,10 +59,6 @@ class Schedule extends React.Component {
 
         open: false,
         open_edit: false,
-    };
-
-    setFirstSchedulerRef = (ref) => {
-        this.setState({firstSchedulerRef: ref.instance})
     };
 
     getIndex = (id, array) => {
@@ -215,7 +210,6 @@ class Schedule extends React.Component {
 
     // показує форму нового візиту, записує в state обраний час
     onCellClick = (e) => {
-        console.log('b');
         this.setState({
             open: true,
             new_start: e.cellData.startDate,
@@ -247,7 +241,6 @@ class Schedule extends React.Component {
 
     // відкриває модульне вікно для редагування прийому
     onAppDblClick = (e) => {
-        console.log('a');
         e.cancel = true;
         this.setState({
             opened_visit: e.appointmentData,
@@ -318,109 +311,92 @@ class Schedule extends React.Component {
 
     render() {
         const today = new Date();
-        const {second_week, third_week, forth_week, client} = this.state;
+        const {second_week, third_week, forth_week, client, client_visits} = this.state;
 
         return(
             <div className='row'>
                 <div className='col-md-10'>
-                    <div>
-                        <Scheduler
-                            id='first_scheduler'
-                            ref={this.setFirstSchedulerRef}
-                            dataSource={this.state.visits}
-                            height={'auto'}
-                            views={[
-                                { name: " ", type: "week", startDate: today },
-                                // { name: "2 тижні", type: "week", intervalCount: 2, startDate: new Date() },
-                                // { name: "День", type: "day", startDate: new Date() },
-                            ]}
-                            currentView={'week'}
-                            defaultCurrentDate={today}
-                            startDayHour={8}
-                            endDayHour={21}
-                            firstDayOfWeek={1}
-                            cellDuration={60}
-                            showAllDayPanel={false}
-                            onCellClick={this.onCellClick}
-                            onAppointmentUpdated={this.changeVisitsTime}
-                            onAppointmentDeleted={this.delVisit}
-                            // onAppointmentClick={(e) => {e.cancel = true;}}
-                            onAppointmentClick={this.onAppClick}
-                            onAppointmentDblClick={this.onAppDblClick}
-                            maxAppointmentsPerCell={'unlimited'}
-                            shadeUntilCurrentTime={true}
-                            // crossScrollingEnabled={true} // щоб працювало css
-                            allowDragging={true}
-                            onOptionChanged={this.syncSchedulers}
-                        />
-                    </div>
-                    <div>
-                        <Scheduler
-                            id='not_first_scheduler'
-                            dataSource={this.state.visits}
-                            height={'auto'}
-                            currentView={'week'}
-                            currentDate={new Date(second_week)}
-                            startDayHour={8}
-                            endDayHour={21}
-                            firstDayOfWeek={1}
-                            cellDuration={60}
-                            showAllDayPanel={false}
-                            onCellClick={this.onCellClick}
-                            onAppointmentUpdated={this.changeVisitsTime}
-                            onAppointmentDeleted={this.delVisit}
-                            onAppointmentClick={this.onAppClick}
-                            onAppointmentDblClick={this.onAppDblClick}
-                            maxAppointmentsPerCell={'unlimited'}
-                            shadeUntilCurrentTime={true}
-                            allowDragging={true}
-                        />
-                    </div>
-                    <div>
-                        <Scheduler
-                            id='not_first_scheduler'
-                            dataSource={this.state.visits}
-                            height={'auto'}
-                            currentView={'week'}
-                            currentDate={third_week}
-                            startDayHour={8}
-                            endDayHour={21}
-                            firstDayOfWeek={1}
-                            cellDuration={60}
-                            showAllDayPanel={false}
-                            onCellClick={this.onCellClick}
-                            onAppointmentUpdated={this.changeVisitsTime}
-                            onAppointmentDeleted={this.delVisit}
-                            onAppointmentClick={this.onAppClick}
-                            onAppointmentDblClick={this.onAppDblClick}
-                            maxAppointmentsPerCell={'unlimited'}
-                            shadeUntilCurrentTime={true}
-                            allowDragging={true}
-                        />
-                    </div>
-                    <div>
-                        <Scheduler
-                            id='not_first_scheduler'
-                            dataSource={this.state.visits}
-                            height={'auto'}
-                            currentView={'week'}
-                            currentDate={forth_week}
-                            startDayHour={8}
-                            endDayHour={21}
-                            firstDayOfWeek={1}
-                            cellDuration={60}
-                            showAllDayPanel={false}
-                            onCellClick={this.onCellClick}
-                            onAppointmentUpdated={this.changeVisitsTime}
-                            onAppointmentDeleted={this.delVisit}
-                            onAppointmentClick={this.onAppClick}
-                            onAppointmentDblClick={this.onAppDblClick}
-                            maxAppointmentsPerCell={'unlimited'}
-                            shadeUntilCurrentTime={true}
-                            allowDragging={true}
-                        />
-                    </div>
-
+                    <Scheduler
+                        id='first_scheduler'
+                        dataSource={this.state.visits}
+                        height={'auto'}
+                        defaultCurrentView={'week'}
+                        defaultCurrentDate={today}
+                        startDayHour={8}
+                        endDayHour={21}
+                        firstDayOfWeek={1}
+                        cellDuration={60}
+                        showAllDayPanel={false}
+                        onAppointmentUpdated={this.changeVisitsTime}
+                        onAppointmentDeleted={this.delVisit}
+                        onCellClick={this.onCellClick}
+                        onAppointmentClick={this.onAppClick}
+                        onAppointmentDblClick={this.onAppDblClick}
+                        maxAppointmentsPerCell={'unlimited'}
+                        shadeUntilCurrentTime={true}
+                        editing={{'allowResizing':false}}
+                        onOptionChanged={this.syncSchedulers}
+                    />
+                    <Scheduler
+                        id='not_first_scheduler'
+                        dataSource={this.state.visits}
+                        height={'auto'}
+                        currentView={'week'}
+                        currentDate={new Date(second_week)}
+                        startDayHour={8}
+                        endDayHour={21}
+                        firstDayOfWeek={1}
+                        cellDuration={60}
+                        showAllDayPanel={false}
+                        onCellClick={this.onCellClick}
+                        onAppointmentUpdated={this.changeVisitsTime}
+                        onAppointmentDeleted={this.delVisit}
+                        onAppointmentClick={this.onAppClick}
+                        onAppointmentDblClick={this.onAppDblClick}
+                        maxAppointmentsPerCell={'unlimited'}
+                        shadeUntilCurrentTime={true}
+                        editing={{'allowResizing':false}}
+                    />
+                    <Scheduler
+                        id='not_first_scheduler'
+                        dataSource={this.state.visits}
+                        height={'auto'}
+                        currentView={'week'}
+                        currentDate={third_week}
+                        startDayHour={8}
+                        endDayHour={21}
+                        firstDayOfWeek={1}
+                        cellDuration={60}
+                        showAllDayPanel={false}
+                        onCellClick={this.onCellClick}
+                        onAppointmentUpdated={this.changeVisitsTime}
+                        onAppointmentDeleted={this.delVisit}
+                        onAppointmentClick={this.onAppClick}
+                        onAppointmentDblClick={this.onAppDblClick}
+                        maxAppointmentsPerCell={'unlimited'}
+                        shadeUntilCurrentTime={true}
+                        editing={{'allowResizing':false}}
+                    />
+                    <Scheduler
+                        id='not_first_scheduler'
+                        dataSource={this.state.visits}
+                        height={'auto'}
+                        currentView={'week'}
+                        currentDate={forth_week}
+                        startDayHour={8}
+                        endDayHour={21}
+                        firstDayOfWeek={1}
+                        cellDuration={60}
+                        showAllDayPanel={false}
+                        onCellClick={this.onCellClick}
+                        onAppointmentUpdated={this.changeVisitsTime}
+                        onAppointmentDeleted={this.delVisit}
+                        onAppointmentClick={this.onAppClick}
+                        onAppointmentDblClick={this.onAppDblClick}
+                        maxAppointmentsPerCell={'unlimited'}
+                        shadeUntilCurrentTime={true}
+                        editing={{'allowResizing':false}}
+                    />
 
                     {/* Модальне вікно створення нового прийому */}
                     <Modal visible={this.state.open} effect="fadeInUp" onClickAway={this.closeForm}>
@@ -489,13 +465,14 @@ class Schedule extends React.Component {
                                     </Select>
                                 </label>
 
-                                <label className="css_full_width">Сплачено:
-                                    <input className="form-control" value={this.state.price} name='price' onChange={this.onChange}/> грн.
-                                </label> <br />
+                                <label className="css_full_width d-flex align-items-end">
+                                    <span>Сплачено:</span>
+                                    <input className="form-control w-25 mx-1" value={this.state.price} name='price' onChange={this.onChange}/>
+                                    <span>грн.</span>
+                                </label>
 
                                 <hr/>
                                 <Button className="float-sm-left btn btn-outline-primary my-3" onClick={this.changeVisitsInfo}>Підтвердити</Button>
-                                <Button className="float-sm-right btn btn-outline-secondary my-3" onClick={this.deactivateClient}>Видалити прийом</Button>
                             </Form>
                         </div>
                     </Modal>
@@ -504,7 +481,7 @@ class Schedule extends React.Component {
                     <SideMenu/>
                     <div className='border border-primary rounded p-1 mt-2 text-center'>
                         <div className='font-weight-bold'>{client}</div>
-                        <For each='visit' index='id' of={this.state.client_visits}>
+                        <For each='visit' index='id' of={client_visits}>
                             <div key={visit.id}>
                                 {visit.start}
                             </div>
