@@ -25,6 +25,7 @@ def get_visits(day):
         'endDate': convert_to_localtime(visit.finish, '%Y/%m/%d %H:%M:%S'),
         'note': '' if visit.note is None else visit.note,
         'doctor': '' if visit.doctor is None else visit.doctor.name,
+        'price': '' if visit.price is None else visit.price,
     } for visit in Visit.objects
         .filter(start__range=[day - timedelta(days=7), day + timedelta(days=28)])
         .filter(is_active=True)]
@@ -108,7 +109,7 @@ def change_visit(request, pk):
             if form.is_valid():
                 form.save()
                 return HttpResponse(visit)
-        elif request.POST['change'] == 'doctor_note':
+        elif request.POST['change'] == 'info':
             form = ChangeVisitsDoctorOrNoteForm(request.POST, instance=visit)
             if form.is_valid():
                 form.save()

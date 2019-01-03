@@ -24,7 +24,7 @@ class ChangeVisitsTimeForm(forms.ModelForm):
 class ChangeVisitsDoctorOrNoteForm(forms.ModelForm):
     class Meta:
         model = Visit
-        fields = ('doctor', 'note')
+        fields = ('doctor', 'note', 'price')
 
 
 class DelVisitForm(forms.ModelForm):

@@ -9,6 +9,7 @@ import Textarea from 'react-validation/build/textarea';
 import { Scheduler } from 'devextreme-react';
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.compact.css';
+import 'devextreme-intl';
 import querystring from 'querystring';
 import DxTable from '../dx_table';
 import SideMenu from '../side_menu/side_menu'
@@ -96,9 +97,9 @@ class Schedule extends React.Component {
     // Надає дату та час нового візиту для показу у формі
     getVisitsTime(time) {
         const visitTime = new Date(time);
-        const return_day = visitTime.getFullYear() + '.' + parseInt(visitTime.getMonth()+1) + '.' + visitTime.getDate();
+        const return_day = visitTime.getDate() + '.' + parseInt(visitTime.getMonth()+1) + '.' + visitTime.getFullYear();
         const return_time =  visitTime.getHours() + ':00:00';
-        return (return_day + ' ' + return_time);
+        return (return_day + ', ' + return_time);
     }
 
     // додає візит у бд і список
@@ -176,14 +177,17 @@ class Schedule extends React.Component {
 
     changeVisitsInfo = (e) => {
         e.preventDefault();
-        if (this.state.note !== this.state.opened_visit.note || this.state.doctor !== this.state.opened_visit.doctor ) {
+        if (this.state.note !== this.state.opened_visit.note ||
+            this.state.doctor !== this.state.opened_visit.doctor ||
+            this.state.price !== this.state.opened_visit.price ) {
             axios({
                 method: 'post',
                 url: 'change_visit/' + this.state.opened_visit.id + '/',
                 data: querystring.stringify({
-                    change: 'doctor_note',
+                    change: 'info',
                     doctor: this.state.doctor_id,
                     note: this.state.note,
+                    price: this.state.price,
                 }),
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -193,6 +197,7 @@ class Schedule extends React.Component {
                 let temp_visits = this.state.visits;
                 temp_visits[index].note = this.state.note;
                 temp_visits[index].doctor = this.state.doctor;
+                temp_visits[index].price = this.state.price;
                 this.setState({visits: temp_visits});
                 this.closeForm();
             }).catch((error) => {
@@ -243,12 +248,13 @@ class Schedule extends React.Component {
     onAppDblClick = (e) => {
         e.cancel = true;
         this.setState({
-            opened_visit: e.appointmentData,
+            opened_visit: e.appointmentData, // окремий запис всіх даних для звірки, чи відбулись зміни перед збереженням
             note: e.appointmentData.note,
             start: e.appointmentData.startDate,
             finish: e.appointmentData.endDate,
             doctor: e.appointmentData.doctor,
             client: e.appointmentData.text,
+            price: e.appointmentData.price,
             open_edit: true
         })
     };
