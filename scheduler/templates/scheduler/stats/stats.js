@@ -13,7 +13,7 @@ class Stats extends React.Component {
         return(
             <div className="row">
                 <div className="col-md-10">
-                    Статистика
+                    Тут буде статистика
                 </div>
                 <div className='col-md-2'>
                     <SideMenu/>

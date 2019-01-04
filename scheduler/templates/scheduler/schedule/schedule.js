@@ -9,7 +9,6 @@ import Textarea from 'react-validation/build/textarea';
 import { Scheduler } from 'devextreme-react';
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.compact.css';
-import 'devextreme-intl';
 import querystring from 'querystring';
 import DxTable from '../dx_table';
 import SideMenu from '../side_menu/side_menu'
@@ -21,7 +20,6 @@ axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded, x-xsrf-token';
 
 // TODO: Внесення оплати
-
 
 class Schedule extends React.Component {
 
