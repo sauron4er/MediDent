@@ -11,16 +11,21 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from YamJam import yamjam
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Тут зберігаємо секретний ключ та підключення до бд
+SECRETS = yamjam(os.path.join(BASE_DIR, 'medident/config.yaml'))['medident']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')f$kgb^u-_g!ba4=&xa5(q@#v=t7&97@rc2mz%my!h23psxe5*'
+# SECRET_KEY = ')f$kgb^u-_g!ba4=&xa5(q@#v=t7&97@rc2mz%my!h23psxe5*'
+SECRET_KEY = SECRETS['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -77,20 +82,27 @@ WSGI_APPLICATION = 'MediDent.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'data.sqlite'),
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'data.sqlite'),
+        'ENGINE': SECRETS['database']['ENGINE'],
+        'NAME': SECRETS['database']['NAME'],
+        'USER': SECRETS['database']['USER'],
+        'PASSWORD': SECRETS['database']['PASSWORD'],
+        'HOST': SECRETS['database']['HOST'],
+        'PORT': SECRETS['database']['PORT'],
     },
     # 'default': {
     #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'DB_NAME',
-    #     'USER': 'DB_USER',
-    #     'PASSWORD': 'DB_PASSWORD',
-    #     'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+    #     'NAME': 'medident',
+    #     'USER': 'root',
+    #     'PASSWORD': 'fwmrbqcgfvth',
+    #     'HOST': 'localhost',
     #     'PORT': '3306',
-    # }
+    # },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

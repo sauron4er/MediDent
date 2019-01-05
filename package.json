@@ -36,7 +36,7 @@
     "webpack": "^4.8.3",
     "webpack-bundle-tracker": "^0.3.0",
     "webpack-cli": "^2.1.5",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
     "@devexpress/dx-react-core": "^1.7.0",

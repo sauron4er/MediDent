@@ -1,0 +1,9 @@
+medident:
+  secret_key: )f$kgb^u-_g!ba4=&xa5(q@#v=t7&97@rc2mz%my!h23psxe5*
+  database:
+    ENGINE: django.db.backends.mysql
+    NAME: medident
+    USER: root
+    PASSWORD: fwmrbqcgfvth
+    HOST: localhost
+    PORT: 3306

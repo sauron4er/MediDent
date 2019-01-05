@@ -180,7 +180,7 @@ class Clients extends React.Component {
 
     render() {
         return(
-            <div className="row">
+            <div className="row css_full_width">
                 <div className="col-md-4 pt-2 pl-4 css_full_width">
                     <button className="btn btn-outline-primary mb-1 w-100" onClick={this.onOpenModal}>Додати клієнта</button>
                     <DxTable

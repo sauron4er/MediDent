@@ -1,5 +1,5 @@
 django==2.0.8
 pytz==2018.4
-mysqlclient==1.3.12
 django-webpack-loader
-python-dateutil
+python-dateutil==2.7.5
+yamjam==0.1.7
