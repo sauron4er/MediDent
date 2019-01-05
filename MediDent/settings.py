@@ -24,7 +24,6 @@ SECRETS = yamjam(os.path.join(BASE_DIR, 'medident/config.yaml'))['medident']
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = ')f$kgb^u-_g!ba4=&xa5(q@#v=t7&97@rc2mz%my!h23psxe5*'
 SECRET_KEY = SECRETS['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -94,14 +93,6 @@ DATABASES = {
         'HOST': SECRETS['database']['HOST'],
         'PORT': SECRETS['database']['PORT'],
     },
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'medident',
-    #     'USER': 'root',
-    #     'PASSWORD': 'fwmrbqcgfvth',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    # },
 }
 
 # Password validation
