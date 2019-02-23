@@ -4,7 +4,8 @@ import validator from 'validator';
 export const required = (value) => {
   if (!value.toString().trim().length) {
     // We can return string or jsx as the 'error' prop for the validated Component
-    return <span className="error text-danger"> Це поле не може бути пустим.</span>
+    // return <span className="error text-danger"> Це поле не може бути пустим.</span>
+    return null
   }
 };
 

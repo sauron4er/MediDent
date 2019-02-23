@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 from django.utils import timezone
 import pytz
 import json
 
 from .models import Client, Doctor, Visit
-from .forms import ClientForm, AddVisitForm, ChangeVisitsTimeForm, DelVisitForm, ChangeVisitsDoctorOrNoteForm
+from .forms import ClientForm, AddVisitForm, ChangeVisitsTimeForm, DelVisitForm, ChangeVisitsDoctorOrNoteForm, DoctorForm, FireDoctorForm
 
 
 def convert_to_localtime(utctime, fmt):
@@ -49,7 +49,7 @@ def schedule(request):
         return render(request, 'scheduler/schedule/schedule.html', {
             'visits': get_visits(timezone.now()), 'clients': clients_list, 'doctors': doctors,
         })
-    if request.method == 'POST':
+    elif request.method == 'POST':
         # копіюємо запит, щоб зробити його мутабельним і обробляємо поля
         visit_request = request.POST.copy()
 
@@ -70,25 +70,26 @@ def schedule(request):
 
 
 @login_required
-def visits_list(request, date):
+def visits_list(request, first_date):
     if request.method == 'GET':
         return HttpResponse(
             json.dumps(
-                get_visits(datetime.strptime(date, "%Y/%m/%d"))
+                get_visits(datetime.strptime(first_date, "%Y/%m/%d"))
             )
         )
 
 
+# Список майбутніх візитів клієнта
 @login_required
 def client_visits(request, visit_id):
     if request.method == 'GET':
-        visit = get_object_or_404(Visit, pk=visit_id)
+        clicked_visit = get_object_or_404(Visit, pk=visit_id)
 
-        visits = [{  # Список майбутніх візитів клієнта
-            'id': vis.pk,
-            'start': convert_to_localtime(vis.start, '%d.%m, %H:%M:%S'),
-        } for vis in Visit.objects
-            .filter(client_id=visit.client_id)
+        visits = [{
+            'id': visit.pk,
+            'start': convert_to_localtime(visit.start, '%d.%m, %H:%M:%S'),
+        } for visit in Visit.objects
+            .filter(client_id=clicked_visit.client_id)
             .filter(is_active=True)
             .filter(start__gte=datetime.now())
             .order_by('start')]
@@ -124,7 +125,14 @@ def change_visit(request, pk):
 @login_required
 def stats(request):
     if request.method == 'GET':
-        return render(request, 'scheduler/stats/stats.html')
+        doctors_list = [{
+            'id': doctor.pk,
+            'name': doctor.name,
+        } for doctor in Doctor.objects.filter(is_active=True).order_by('name')]
+
+        return render(request, 'scheduler/stats/stats.html', {
+            'doctors': doctors_list,
+        })
 
 
 @login_required
@@ -141,7 +149,7 @@ def clients(request):
             'clients': clients_list,
         })
 
-    if request.method == 'POST':
+    elif request.method == 'POST':
         client_form = ClientForm(request.POST)
         if client_form.is_valid():
             # Постимо і отримуємо ід нового клієнта
@@ -158,3 +166,28 @@ def edit_client(request, pk):
         if form.is_valid():
             form.save()
             return HttpResponse(client)
+
+
+@login_required
+def new_doctor(request):
+    if request.method == 'POST':
+        doctor_request = request.POST.copy()
+        doctor_request.update({'hired_date': timezone.now()})
+        doctor_form = DoctorForm(doctor_request)
+        if doctor_form.is_valid():
+            new_doctor_id = doctor_form.save().pk
+
+            return HttpResponse(new_doctor_id)
+
+
+@login_required
+def fire_doctor(request, pk):
+    if request.method == 'POST':
+        doctor = get_object_or_404(Doctor, pk=pk)
+        doctor_request = request.POST.copy()
+        doctor_request.update({'fired_date': timezone.now()})
+        form = FireDoctorForm(doctor_request, instance=doctor)
+        if form.is_valid():
+            form.save()
+            return HttpResponse(doctor)
+

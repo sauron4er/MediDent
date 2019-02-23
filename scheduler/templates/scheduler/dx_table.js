@@ -186,7 +186,7 @@ class DxTable extends React.PureComponent {
                     columns={this.props.columns}
                     getRowId={getRowId}
                     style={{height: {grid_height}}}
-                    hoverStateEnabled={true} >
+                    hoverstateenabled='true' >
 
                     <SortingState
                         defaultSorting={this.props.defaultSorting}

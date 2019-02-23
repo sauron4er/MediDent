@@ -7,6 +7,12 @@
 {% block content %}
     <div class="container-fluid pl-0" id="stats"></div>
 
+    {% block script %}
+        <script>
+            window.doctors = {{ doctors|safe }};
+        </script>
+    {% endblock %}
+
     {% render_bundle 'stats' %}
 
 {% endblock %}

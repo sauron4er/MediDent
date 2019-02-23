@@ -221,7 +221,7 @@ class Schedule extends React.Component {
     };
 
     // при одинарному кліку на прийом показує інфу про майбутні прийоми клієнтьа
-    onAppClick = (e) => {
+    onVisitClick = (e) => {
         e.cancel = true;
         this.setState({
             client: e.appointmentData.text,
@@ -334,7 +334,7 @@ class Schedule extends React.Component {
                         onAppointmentUpdated={this.changeVisitsTime}
                         onAppointmentDeleted={this.delVisit}
                         onCellClick={this.onCellClick}
-                        onAppointmentClick={this.onAppClick}
+                        onAppointmentClick={this.onVisitClick}
                         onAppointmentDblClick={this.onAppDblClick}
                         maxAppointmentsPerCell={'unlimited'}
                         shadeUntilCurrentTime={true}
@@ -355,7 +355,7 @@ class Schedule extends React.Component {
                         onCellClick={this.onCellClick}
                         onAppointmentUpdated={this.changeVisitsTime}
                         onAppointmentDeleted={this.delVisit}
-                        onAppointmentClick={this.onAppClick}
+                        onAppointmentClick={this.onVisitClick}
                         onAppointmentDblClick={this.onAppDblClick}
                         maxAppointmentsPerCell={'unlimited'}
                         shadeUntilCurrentTime={true}
@@ -375,7 +375,7 @@ class Schedule extends React.Component {
                         onCellClick={this.onCellClick}
                         onAppointmentUpdated={this.changeVisitsTime}
                         onAppointmentDeleted={this.delVisit}
-                        onAppointmentClick={this.onAppClick}
+                        onAppointmentClick={this.onVisitClick}
                         onAppointmentDblClick={this.onAppDblClick}
                         maxAppointmentsPerCell={'unlimited'}
                         shadeUntilCurrentTime={true}
@@ -395,7 +395,7 @@ class Schedule extends React.Component {
                         onCellClick={this.onCellClick}
                         onAppointmentUpdated={this.changeVisitsTime}
                         onAppointmentDeleted={this.delVisit}
-                        onAppointmentClick={this.onAppClick}
+                        onAppointmentClick={this.onVisitClick}
                         onAppointmentDblClick={this.onAppDblClick}
                         maxAppointmentsPerCell={'unlimited'}
                         shadeUntilCurrentTime={true}

@@ -9,6 +9,18 @@ class ClientForm(forms.ModelForm):
         fields = ('name', 'note', 'phone', 'is_active')
 
 
+class DoctorForm(forms.ModelForm):
+    class Meta:
+        model = Doctor
+        fields = ('name', 'hired_date')
+
+
+class FireDoctorForm(forms.ModelForm):
+    class Meta:
+        model = Doctor
+        fields = ('is_active', 'fired_date')
+
+
 class AddVisitForm(forms.ModelForm):
     class Meta:
         model = Visit

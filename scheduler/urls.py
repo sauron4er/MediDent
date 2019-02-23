@@ -2,7 +2,8 @@ from django.conf.urls import include, url
 from django.views.generic.base import RedirectView
 
 # Custom:
-from scheduler.views import schedule, visits_list, client_visits, stats, clients, edit_client, change_visit
+from scheduler.views import schedule, visits_list, client_visits, stats, clients, edit_client, change_visit, \
+    new_doctor, fire_doctor
 
 app_name = 'scheduler'
 
@@ -12,11 +13,13 @@ urlpatterns = [
     url(r'^schedule/clients', RedirectView.as_view(url='/clients', permanent=True), {'url': '/clients'}),
     url(r'^schedule/stats', RedirectView.as_view(url='/stats', permanent=True), {'url': '/stats'}),
     url(r'^schedule', schedule, name='schedule'),
-    url(r'^visits_list/(?P<date>\d+/\d+/\d+)/$', visits_list, name='schedule'),
+    url(r'^visits_list/(?P<first_date>\d+/\d+/\d+)/$', visits_list, name='schedule'),
     url(r'^client_visits/(?P<visit_id>\d+)/$', client_visits, name='schedule'),
 
     url(r'^stats/clients', RedirectView.as_view(url='/clients', permanent=True), {'url': '/clients'}),
     url(r'^stats/schedule', RedirectView.as_view(url='/schedule', permanent=True), {'url': '/schedule'}),
+    url(r'^stats/new_doctor', new_doctor, name='new_doctor'),
+    url(r'^stats/fire_doctor/(?P<pk>\d+)/$', fire_doctor, name='fire_doctor'),
     url(r'^stats/', stats, name='stats'),
 
     url(r'^clients/schedule', RedirectView.as_view(url='/schedule', permanent=True), {'url': '/schedule'}),
