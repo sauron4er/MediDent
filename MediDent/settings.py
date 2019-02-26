@@ -18,7 +18,7 @@ from YamJam import yamjam
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Тут зберігаємо секретний ключ та підключення до бд
-SECRETS = yamjam(os.path.join(BASE_DIR, 'medident/config.yaml'))['medident']
+SECRETS = yamjam(os.path.join(BASE_DIR, 'MediDent/config.yaml'))['medident']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -131,6 +131,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticroot')
 
 STATIC_URL = '/static/'
 
@@ -156,4 +157,3 @@ WEBPACK_LOADER = {
 CSRF_COOKIE_NAME = "csrftoken"  # for Axios
 
 CSRF_COOKIE_SECURE = True  # for Axios
-
