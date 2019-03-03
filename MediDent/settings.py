@@ -27,7 +27,7 @@ SECRETS = yamjam(os.path.join(BASE_DIR, 'MediDent/config.yaml'))['medident']
 SECRET_KEY = SECRETS['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 

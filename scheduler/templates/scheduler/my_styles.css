@@ -26,3 +26,8 @@
     border-radius: 10px;
     text-align: center;
 }
+
+.css_client_name {
+    /*overflow-x: hidden;*/
+    word-wrap: break-word;
+}

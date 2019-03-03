@@ -179,7 +179,7 @@ class Clients extends React.Component {
 
   render() {
     return(
-      <div className="row css_full_width">
+      <div className="row">
         <div className="col-md-4 pt-2 pl-4 css_full_width">
           <button className="btn btn-outline-primary mb-1 w-100" onClick={this.onOpenModal}>Додати клієнта</button>
           <DxTable
@@ -242,7 +242,7 @@ class Clients extends React.Component {
           </div>
         </Modal>
 
-        <div className="col-md-6 pt-2">
+        <div className="col-md-7 pt-2">
           <div className='row'>
             <h4>{this.state.client_name}</h4>
             <If condition={this.state.client_name !== ''}>
@@ -256,7 +256,7 @@ class Clients extends React.Component {
           <br/>
           <h6>{this.state.client_note}</h6>
         </div>
-        <div className='col-md-2'>
+        <div className='col-md-1'>
           <SideMenu/>
         </div>
       </div>

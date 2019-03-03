@@ -95,7 +95,7 @@ class Schedule extends React.Component {
     // Надає дату та час нового візиту для показу у формі
     getVisitsTime(time) {
         const visitTime = new Date(time);
-        const return_day = visitTime.getDate() + '.' + parseInt(visitTime.getMonth()+1) + '.' + visitTime.getFullYear();
+        const return_day = (1 + visitTime.getDate()) + '.' + parseInt(visitTime.getMonth()+1) + '.' + visitTime.getFullYear();
         const return_time =  visitTime.getHours() + ':00:00';
         return (return_day + ', ' + return_time);
     }
@@ -319,7 +319,7 @@ class Schedule extends React.Component {
 
         return(
             <div className='row'>
-                <div className='col-md-10'>
+                <div className='col-md-11'>
                     <Scheduler
                         id='first_scheduler'
                         dataSource={this.state.visits}
@@ -481,14 +481,15 @@ class Schedule extends React.Component {
                         </div>
                     </Modal>
                 </div>
-                <div className='col-md-2'>
+                <div className='col-md-1'>
                     <SideMenu/>
                     <div className='border border-primary rounded p-1 mt-2 text-center'>
-                        <div className='font-weight-bold'>{client}</div>
+                        <small className='font-weight-bold css_client_name'>{client}</small>
                         <For each='visit' index='id' of={client_visits}>
-                            <div key={visit.id}>
-                                {visit.start}
-                            </div>
+                            <small key={visit.id}>
+                              <hr className='my-1'/>
+                              {visit.start}
+                            </small>
                         </For>
                     </div>
                 </div>
