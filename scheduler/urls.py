@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^clients/(?P<pk>\d+)/$', edit_client, name='edit_client'),
     url(r'^clients/', clients, name='clients'),
 
-    url(r'^login/$', LoginView.as_view(template_name='login.html'), name='login'),
-    # url(r'^$', schedule, name='schedule'),
-    url(r'^$', LoginView.as_view(template_name='login.html'), name='schedule'),
+    # url(r'^login/$', LoginView.as_view(template_name='login.html'), name='login'),
+    url(r'^$', schedule, name='schedule'),
+    # url(r'^$', LoginView.as_view(template_name='login.html'), name='schedule'),
 ]
