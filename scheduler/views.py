@@ -21,6 +21,7 @@ def get_visits(day):
     visits = [{
         'id': visit.id,
         'text': visit.client.name,
+        'client_id': visit.client.id,
         'startDate': convert_to_localtime(visit.start, '%Y/%m/%d %H:%M:%S'),
         'endDate': convert_to_localtime(visit.finish, '%Y/%m/%d %H:%M:%S'),
         'note': '' if visit.note is None else visit.note,

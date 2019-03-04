@@ -1,5 +1,4 @@
 let path = require("path");
-let webpack = require('webpack');
 let BundleTracker = require('webpack-bundle-tracker');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 let pathsToClean = [

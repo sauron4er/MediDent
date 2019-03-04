@@ -7,18 +7,18 @@ class SideMenu extends React.PureComponent {
   render() {
     return (
       <Fragment>
-        <a className="badge badge-primary w-100 mt-1" href="schedule">
-          <div className='btn btn-light btn-sm'>
+        <a className="badge w-100" href="schedule">
+          <div className='btn btn-primary btn-sm w-100'>
             <FontAwesomeIcon icon={faCalendarAlt} />
           </div>
         </a>
-        <a className="badge badge-primary w-100 mt-1" href="clients">
-          <div className='btn btn-light btn-sm'>
+        <a className="badge w-100" href="clients">
+          <div className='btn btn-primary btn-sm w-100'>
             <FontAwesomeIcon icon={faUsers} />
           </div>
         </a>
-        <a className="badge badge-primary w-100 mt-1" href="stats">
-          <div className='btn btn-light btn-sm'>
+        <a className="badge w-100" href="stats">
+          <div className='btn btn-primary btn-sm w-100'>
             <FontAwesomeIcon icon={faChartPie} />
           </div>
         </a>

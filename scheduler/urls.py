@@ -1,5 +1,6 @@
-from django.conf.urls import include, url
+from django.conf.urls import url
 from django.views.generic.base import RedirectView
+from django.contrib.auth.views import LoginView
 
 # Custom:
 from scheduler.views import schedule, visits_list, client_visits, stats, clients, edit_client, change_visit, \
@@ -27,5 +28,7 @@ urlpatterns = [
     url(r'^clients/(?P<pk>\d+)/$', edit_client, name='edit_client'),
     url(r'^clients/', clients, name='clients'),
 
-    url(r'^$', schedule, name='schedule'),
+    url(r'^login/$', LoginView.as_view(template_name='login.html'), name='login'),
+    # url(r'^$', schedule, name='schedule'),
+    url(r'^$', LoginView.as_view(template_name='login.html'), name='schedule'),
 ]
